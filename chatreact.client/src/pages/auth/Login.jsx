@@ -3,6 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatLogo from '../../assets/TheChatAppNoBg.png'
+import LogoLeft from '../../assets/TheChatAppAddsNoBg-1.png'
+import LogoRight from '../../assets/TheChatAppAddsNoBg-2.png'
+import LogoBottom from '../../assets/TheChatAppAddsNoBg-3.png'
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -53,8 +56,12 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900">
-            <img className="mb-8" src={ChatLogo} alt="Chat Header" />
-            <div className="bg-gray-800 shadow-lg rounded-lg p-8 w-80">
+            <img className="absolute top-20" src={ChatLogo} alt="Chat Logo" />
+            <div className="z-10 relative bg-gray-800 shadow-lg rounded-lg p-8 w-80">
+                <img className="absolute -left-44 bottom-32" src={LogoLeft} alt="Logo Add" />
+                <img className="absolute -right-36 bottom-32" src={LogoRight} alt="Logo Add" />
+                <img className="absolute -bottom-28 left-1/2 transform -translate-x-1/2" src={LogoBottom} alt="Logo Add" />
+
                 <h1 className="text-2xl text-white text-center mb-6">Login</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input

@@ -3,6 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatLogo from '../../assets/TheChatAppNoBg.png'
+import LogoLeft from '../../assets/TheChatAppAddsNoBg-1.png'
+import LogoRight from '../../assets/TheChatAppAddsNoBg-2.png'
+import LogoBottom from '../../assets/TheChatAppAddsNoBg-3.png'
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -51,9 +54,13 @@ const Register = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900">
-            <img className="mb-8" src={ChatLogo} alt="Chat Header" />
-            <div className="bg-gray-800 shadow-lg rounded-lg p-8 w-80">
-                <h1 className="text-2xl text-white text-center mb-6">Signup</h1>
+            <img className="absolute top-20" src={ChatLogo} alt="Logo" />
+            <div className="z-10 relative bg-gray-800 shadow-lg rounded-lg p-8 w-80">
+                <img className="absolute -left-44 bottom-40" src={LogoLeft} alt="Logo Add" />
+                <img className="absolute -right-36 bottom-40" src={LogoRight} alt="Logo Add" />
+                <img className="absolute -bottom-28 left-1/2 transform -translate-x-1/2" src={LogoBottom} alt="Logo Add" />
+
+                <h1 className="text-2xl text-white text-center mb-6">Register</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input
                         type="text"
@@ -86,7 +93,7 @@ const Register = () => {
                         type="submit"
                         className="bg-purple-700 hover:bg-purple-500 text-white p-2 rounded transition"
                     >
-                        SIGN UP
+                        Register
                     </button>
                     <div className="text-white text-center mt-4">Already registered?</div>
                     <Link to="/login" className="text-purple-500 text-center">Login here</Link>
