@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { motion } from 'framer-motion'
+import { GoPersonAdd } from "react-icons/go";
+
 import ChatLogo from '../../assets/TheChatAppNoBg.png'
 import LogoLeft from '../../assets/TheChatAppAddsNoBg-1.png'
 import LogoRight from '../../assets/TheChatAppAddsNoBg-2.png'
 import LogoBottom from '../../assets/TheChatAppAddsNoBg-3.png'
+import ByTobias from '../../assets/ByTobias.png'
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -54,11 +58,25 @@ const Register = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900">
-            <img className="absolute top-20" src={ChatLogo} alt="Logo" />
+            <motion.img
+                initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
+                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                transition={{ duration: 2 }}
+                src={ChatLogo}
+                className="absolute top-20"
+            />
+            <motion.img
+                initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
+                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                transition={{ duration: 1, delay: 0.75 }}
+                src={ByTobias}
+                className="w-32 absolute bottom-10"
+            />
+
             <div className="z-10 relative bg-gray-800 shadow-lg rounded-lg p-8 w-80">
-                <img className="absolute -left-44 bottom-40" src={LogoLeft} alt="Logo Add" />
-                <img className="absolute -right-36 bottom-40" src={LogoRight} alt="Logo Add" />
-                <img className="absolute -bottom-28 left-1/2 transform -translate-x-1/2" src={LogoBottom} alt="Logo Add" />
+                <motion.img initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.5, duration: 1.5 }} className="absolute -left-44 bottom-40" src={LogoLeft} alt="Logo Add" />
+                <motion.img initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.5, duration: 1.5 }} className="absolute -right-36 bottom-40" src={LogoRight} alt="Logo Add" />
+                <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5, duration: 1.5 }} className="absolute -bottom-28 left-28" src={LogoBottom} alt="Logo Add" />
 
                 <h1 className="text-2xl text-white text-center mb-6">Register</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -91,15 +109,16 @@ const Register = () => {
                     />
                     <button
                         type="submit"
-                        className="bg-purple-700 hover:bg-purple-500 text-white p-2 rounded transition"
+                        className="flex justify-center gap-2 bg-purple-700 hover:bg-purple-500 text-white p-2 rounded transition"
                     >
-                        Register
+                        <div className="text-lg">Register</div>
+                        <GoPersonAdd size="25" />
                     </button>
                     <div className="text-white text-center mt-4">Already registered?</div>
                     <Link to="/login" className="text-purple-500 text-center">Login here</Link>
                 </form>
             </div>
-            <ToastContainer />
+            <ToastContainer position="top-center" />
         </div>
     );
 };

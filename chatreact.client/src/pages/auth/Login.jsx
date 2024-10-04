@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import { GoSignIn } from "react-icons/go";
+
 import ChatLogo from '../../assets/TheChatAppNoBg.png'
 import LogoLeft from '../../assets/TheChatAppAddsNoBg-1.png'
 import LogoRight from '../../assets/TheChatAppAddsNoBg-2.png'
 import LogoBottom from '../../assets/TheChatAppAddsNoBg-3.png'
+import ByTobias from '../../assets/ByTobias.png'
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -57,6 +61,8 @@ const Login = () => {
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900">
             <img className="absolute top-20" src={ChatLogo} alt="Chat Logo" />
+            <img src={ByTobias} className="w-32 absolute bottom-10" />
+
             <div className="z-10 relative bg-gray-800 shadow-lg rounded-lg p-8 w-80">
                 <img className="absolute -left-44 bottom-32" src={LogoLeft} alt="Logo Add" />
                 <img className="absolute -right-36 bottom-32" src={LogoRight} alt="Logo Add" />
@@ -84,9 +90,10 @@ const Login = () => {
                     />
                     <button
                         type="submit"
-                        className="bg-purple-700 hover:bg-purple-500 text-white p-2 rounded transition"
+                        className="flex justify-center items-center gap-2 bg-purple-700 hover:bg-purple-500 text-white p-2 rounded transition"
                     >
-                        Login
+                        <div className="text-lg">Log in</div>
+                        <GoSignIn size="22" />
                     </button>
                     <div className="text-white text-center mt-4">No account?</div>
                     <Link to="/" className="text-purple-500 text-center">Register here</Link>
@@ -98,7 +105,7 @@ const Login = () => {
                     <div className="w-16 h-16 border-8 border-t-gray-500 border-gray-300 rounded-full animate-spin"></div>
                 </div>
             )}
-            <ToastContainer />
+            <ToastContainer position="top-center" />
         </div>
     );
 };
