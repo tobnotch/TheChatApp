@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { motion } from 'framer-motion'
 
 import { GoSignIn } from "react-icons/go";
 
@@ -60,13 +61,33 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900">
-            <img className="absolute top-20" src={ChatLogo} alt="Chat Logo" />
-            <img src={ByTobias} className="w-32 absolute bottom-10" />
+            {/* Gick inte att CSSa, så fick göra nedan lösning med två olika divar */}
+            {/* Logotyp för små skärmar */}
+            <img
+                src={ChatLogo}
+                className="block 2xl:hidden w-20 absolute top-5 left-5"
+            />
+            {/* Logotyp för stora skärmar (2xl och uppåt) */}
+            <img
+                src={ChatLogo}
+                className="hidden 2xl:block absolute top-20"
+            />
+
+            {/* Logotyp för små skärmar */}
+            <img
+                src={ByTobias}
+                className="block 2xl:hidden w-20 absolute top-2 right-2"
+            />
+            {/* Logotyp för stora skärmar (2xl och uppåt) */}
+            <img
+                src={ByTobias}
+                className="hidden 2xl:block absolute w-32 bottom-10"
+            />
 
             <div className="z-10 relative bg-gray-800 shadow-lg rounded-lg p-8 w-80">
-                <img className="absolute -left-44 bottom-32" src={LogoLeft} alt="Logo Add" />
-                <img className="absolute -right-36 bottom-32" src={LogoRight} alt="Logo Add" />
-                <img className="absolute -bottom-28 left-1/2 transform -translate-x-1/2" src={LogoBottom} alt="Logo Add" />
+                <img className="absolute -left-44 bottom-28" src={LogoLeft} alt="Logo Add" />
+                <img  className="absolute -right-36 bottom-[120px]" src={LogoRight} alt="Logo Add" />
+                <img  className="hidden 2xl:block absolute -bottom-28 left-28" src={LogoBottom} alt="Logo Add" />
 
                 <h1 className="text-2xl text-white text-center mb-6">Login</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">

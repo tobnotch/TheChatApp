@@ -1,12 +1,12 @@
 ﻿import React, { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import * as signalR from '@microsoft/signalr';
 import DOMPurify from 'dompurify';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import { FaPaperPlane } from 'react-icons/fa';
+import { IoIosArrowForward } from "react-icons/io";
 
 import ChatRoomLink from '../components/ChatRoomLink'
 import ChatLogo from '../assets/TheChatAppNoBg.png'
@@ -27,7 +27,7 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.25,
+            staggerChildren: 0.2,
         },
     },
 };
@@ -36,7 +36,7 @@ const itemVariants = {
     hidden: { opacity: 0, y: -10 },
     visible: {
         opacity: 1, y: 0,
-        transition: { duration: 1 }
+        transition: { duration: 0.5 }
     },
 };
 
@@ -47,6 +47,7 @@ const MainChat = () => {
     const chatRef = useRef(null);
     const [connection, setConnection] = useState(null);
     const [hovered, setHovered] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         const token = sessionStorage.getItem('jwtToken');
@@ -98,29 +99,49 @@ const MainChat = () => {
         }
     };
 
+    const toggleVisibility = () => {
+        setIsVisible((prev) => !prev);
+    };
+
     return (
         <div className="min-h-screen w-full flex justify-center items-center bg-gray-900">
             <img className="absolute top-10 left-10 w-20" src={ChatLogo} alt="Chat Header" />
             <img src={ByTobias} className="w-20 absolute top-5 right-10" />
 
-            <div className="z-10 relative bg-gray-800 shadow-lg rounded-lg p-6 w-[35rem]">
-                <div className="flex flex-col p-4 space-y-4 absolute top-36 -left-[20rem] text-white">
-                    <h1 className="text-xl font-bold cursor-default">Chatrooms</h1>
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="space-y-3"
-                    >
-                        {chatRooms.map((room) => (
-                            <motion.div key={room.id} variants={itemVariants}>
-                                <ChatRoomLink roomId={room.id} roomName={room.name} />
+            <div className="z-10 w-[512px] 2xl:w-[812px] relative bg-gray-800 shadow-lg rounded-lg p-6 w-[35rem]">
+                <div className="flex flex-col p-4 space-y-4 absolute -top-5 -right-[10rem] text-white">
+                    <div className="flex justify-center items-center space-x-2" onClick={toggleVisibility}>
+                        <h1 className="text-xl font-bold cursor-pointer">
+                            Chatrooms
+                        </h1>
+                        <motion.div
+                            animate={{ rotate: isVisible ? 90 : 0, y: isVisible ? 3 : 0, x: isVisible ? 3 : 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <IoIosArrowForward size="20" className="-mb-1 cursor-pointer" />
+                        </motion.div>
+                    </div>
+
+                    <AnimatePresence>
+                        {isVisible && (
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate={isVisible ? "visible" : "hidden"}
+                                exit="hidden"
+                                className="space-y-3"
+                            >
+                                {chatRooms.map((room) => (
+                                    <motion.div key={room.id} variants={itemVariants}>
+                                        <ChatRoomLink roomId={room.id} roomName={room.name} />
+                                    </motion.div>
+                                ))}
                             </motion.div>
-                        ))}
-                    </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
-                <div ref={chatRef} id="chat" className="text-white h-[500px] overflow-y-auto overflow-x-hidden">
+                <div ref={chatRef} id="chat" className="text-white h-[400px] 2xl:h-[800px] overflow-y-auto overflow-x-hidden">
                     {messages.map((msg, index) => (
                         <div key={index} className="message">
                             <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1 }}><span className="font-bold">{msg.user}:</span> {msg.message}</motion.div>
