@@ -11,7 +11,7 @@ const ChatRoomLink = ({ roomId, roomName, isPrivate, userRole }) => {
     <motion.div initial={{ x: 0 }} whileHover={{ x: isDisabled ? 0 : 8 }}>
       {isDisabled ? (
         <span className="text-gray-500 cursor-not-allowed flex items-center">
-          {roomName} <FaLock className="ml-1" />
+          {roomName} <FaLock className="ml-2" />
         </span>
       ) : (
         <Link to={`/chatroom/${roomId}`} className="text-white">
