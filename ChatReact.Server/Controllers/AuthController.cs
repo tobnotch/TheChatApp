@@ -28,12 +28,12 @@ namespace ChatReact.Server.Controllers
       }
 
       var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
-      var user = new User { Username = userDTO.Username, PasswordHash = hashedPassword };
+      var user = new User { Username = userDTO.Username, PasswordHash = hashedPassword, Role = userDTO.Role };
 
       _context.Users.Add(user);
       _context.SaveChanges();
 
-      return Ok(new { message = "User registered successfully" });
+      return Ok(new { message = "User registered successfully with role: " + user.Role });
     }
 
     [HttpPost("login")]

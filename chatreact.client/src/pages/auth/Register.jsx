@@ -15,6 +15,7 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('');
 
   const navigate = useNavigate();
 
@@ -38,6 +39,7 @@ const Register = () => {
           username,
           password,
           confirmPassword,
+          role,
         }),
       });
 
@@ -127,6 +129,18 @@ const Register = () => {
             required
             className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <select
+            id="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>Select Role</option>
+            <option value="User">User</option>
+            <option value="VIP">VIP</option>
+          </select>
+
           <button
             type="submit"
             className="flex justify-center gap-2 bg-purple-700 hover:bg-purple-500 text-white p-2 rounded transition"

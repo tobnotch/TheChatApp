@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion, AnimatePresence } from 'framer-motion'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { FaPaperPlane } from 'react-icons/fa';
 import { IoIosArrowForward } from "react-icons/io";
@@ -14,11 +14,12 @@ import ChatLogo from '../assets/TheChatAppNoBg.png'
 import ByTobias from '../assets/ByTobias.png'
 
 const chatRooms = [
-  { id: 'main', name: 'Main Stage' },
-  { id: 'bash', name: 'Bug Bash' },
-  { id: 'hangout', name: '404 Hangout' },
-  { id: 'club', name: 'Commit Club' },
-  { id: 'cafe', name: 'Infinite Loop Cafe' },
+  { id: 'main', name: 'Main Stage', isPrivate: false },
+  { id: 'bash', name: 'Bug Bash', isPrivate: false },
+  { id: 'hangout', name: '404 Hangout', isPrivate: false },
+  { id: 'club', name: 'Commit Club', isPrivate: false },
+  { id: 'cafe', name: 'Infinite Loop Cafe', isPrivate: false },
+  { id: 'vip', name: 'VIP Vault', isPrivate: true },
 ];
 
 const containerVariants = {
@@ -45,26 +46,28 @@ const ChatRoom = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [connection, setConnection] = useState(null);
   const [hovered, setHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
   const chatRef = useRef(null);
   const { id } = useParams();
   const room = chatRooms.find(room => room.id === id);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = sessionStorage.getItem('jwtToken');
     if (token) {
       const decodedJwt = JSON.parse(atob(token.split('.')[1]));
       setUsername(decodedJwt.unique_name);
+      setUserRole(decodedJwt.role);
 
       const connection = new signalR.HubConnectionBuilder()
         .withUrl('/chathub', { accessTokenFactory: () => token })
         .build();
 
       connection.start().then(() => {
-        toast.success(`Connected to room: ${id}!`);
-
         setMessages([]);
 
         connection.invoke('JoinRoom', id)
@@ -79,7 +82,6 @@ const ChatRoom = () => {
         const sanitizedMessage = DOMPurify.sanitize(message);
 
         setMessages((prevMessages) => [...prevMessages, { user: sanitizedUser, message: sanitizedMessage }]);
-        ScrollToBottom();
       });
 
       setConnection(connection);
@@ -92,8 +94,14 @@ const ChatRoom = () => {
     };
   }, [id]);
 
+  useEffect(() => {
+    ScrollToBottom();
+  }, [messages]);
+
   const ScrollToBottom = () => {
-    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
   };
 
   const CheckAndEnter = (e) => {
@@ -108,20 +116,68 @@ const ChatRoom = () => {
     }
   };
 
-  const toggleVisibility = () => {
+  const toggleMenu = () => {
     setIsVisible((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('jwtToken');
+    navigate('/login');
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gray-900">
-      <img className="absolute top-10 left-10 w-20" src={ChatLogo} alt="Chat Header" />
-      <img src={ByTobias} className="w-20 absolute top-5 right-10" />
+      {/* Gick inte att CSSa, så fick göra nedan lösning med två olika divar */}
+      {/* Logotyp för små skärmar */}
+      <motion.img
+        initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        transition={{ duration: 2, delay: 1 }}
+        src={ChatLogo}
+        className="block 2xl:hidden w-20 absolute top-5 left-5"
+      />
+      {/* Logotyp för stora skärmar (2xl och uppåt) */}
+      <motion.img
+        initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        transition={{ duration: 2, delay: 1 }}
+        src={ChatLogo}
+        className="hidden 2xl:block absolute top-20"
+      />
+
+      {/* Logotyp för små skärmar */}
+      <motion.img
+        initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        transition={{ duration: 2, delay: 1 }}
+        src={ByTobias}
+        className="block 2xl:hidden w-20 absolute top-2 right-2"
+      />
+      {/* Logotyp för stora skärmar (2xl och uppåt) */}
+      <motion.img
+        initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        transition={{ duration: 2, delay: 1 }}
+        src={ByTobias}
+        className="hidden 2xl:block absolute w-32 bottom-10"
+      />
 
       <div className="text-white font-bold mb-5 text-2xl">{room.name}</div>
 
-      <div className="z-10 w-[512px] 2xl:w-[812px] relative bg-gray-800 shadow-lg rounded-lg p-6 w-[35rem]">
+      <button
+        onClick={handleLogout}
+        className="absolute bottom-5 right-5 bg-red-500 hover:bg-red-400 duration-300 text-white px-4 py-2 rounded"
+      >
+        Log out
+      </button>
+
+      <motion.div
+        initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        transition={{ duration: 1 }}
+        className="z-10 w-[512px] 2xl:w-[812px] relative bg-gray-800 shadow-lg rounded-lg p-6 w-[35rem]">
         <div className="flex flex-col p-4 space-y-4 absolute -top-5 -right-[10rem] text-white">
-          <div className="flex justify-center items-center space-x-2" onClick={toggleVisibility}>
+          <div className="flex justify-center items-center space-x-2" onClick={toggleMenu}>
             <h1 className="text-xl font-bold cursor-pointer">
               Chatrooms
             </h1>
@@ -144,7 +200,7 @@ const ChatRoom = () => {
               >
                 {chatRooms.map((room) => (
                   <motion.div key={room.id} variants={itemVariants}>
-                    <ChatRoomLink roomId={room.id} roomName={room.name} />
+                    <ChatRoomLink roomId={room.id} roomName={room.name} isPrivate={room.isPrivate} userRole={userRole} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -173,7 +229,7 @@ const ChatRoom = () => {
             onClick={SendMessage}
             onHoverStart={() => setHovered(true)}
             onHoverEnd={() => setHovered(false)}
-            className="overflow-hidden bg-purple-500 text-white px-10 py-2 relative rounded flex items-center justify-center"
+            className="overflow-hidden bg-purple-500 hover:bg-purple-400 duration-300 text-white px-10 py-2 relative rounded flex items-center justify-center"
           >
             <motion.div
               initial={{ opacity: 1 }}
@@ -194,7 +250,7 @@ const ChatRoom = () => {
             </motion.div>
           </motion.button>
         </div>
-      </div>
+      </motion.div>
       <ToastContainer position="bottom-left" />
     </div>
   );

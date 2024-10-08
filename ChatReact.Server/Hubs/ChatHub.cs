@@ -1,6 +1,7 @@
 ﻿using ChatReact.Server.Data;
 using ChatReact.Server.Models;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace ChatReact.Server.Hubs
 {
@@ -13,31 +14,17 @@ namespace ChatReact.Server.Hubs
       _context = context;
     }
 
-    //public override async Task OnConnectedAsync()
-    //{
-    //  if (Context.User?.Identity != null && Context.User.Identity.IsAuthenticated)
-    //  {
-    //    var messages = _context.ChatMessages
-    //        .OrderBy(m => m.TimeStamp)
-    //        .Take(50)
-    //        .ToList();
-
-    //    foreach (var message in messages)
-    //    {
-    //      await Clients.Caller.SendAsync("ReceiveMessage", message.Username, message.Message);
-    //    }
-    //  }
-    //  else
-    //  {
-    //    await Clients.Caller.SendAsync("ReceiveMessage", "System", "You are not authorized.");
-    //  }
-    //  await base.OnConnectedAsync();
-    //}
-
     public async Task JoinRoom(string chatRoomId)
     {
+      var userRole = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
+
+      if (chatRoomId == "vip" && userRole != "VIP")
+      {
+        await Clients.Caller.SendAsync("ReceiveMessage", "System", "You are not authorized to join the VIP Vault.");
+        return;
+      }
+
       await Groups.AddToGroupAsync(Context.ConnectionId, chatRoomId);
-      //await Clients.Caller.SendAsync("ReceiveMessage", "System", $"Connected to room: {chatRoomId}");
 
       if (Context.User?.Identity != null && Context.User.Identity.IsAuthenticated)
       {

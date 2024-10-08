@@ -20,12 +20,15 @@ namespace ChatReact.Server.Services
       var tokenHandler = new JwtSecurityTokenHandler();
       var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
 
+      var claims = new[]
+      {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role)
+      };
+
       var tokenDescriptor = new SecurityTokenDescriptor
       {
-        Subject = new ClaimsIdentity(new Claim[]
-          {
-                    new Claim(ClaimTypes.Name, user.Username)
-          }),
+        Subject = new ClaimsIdentity(claims),
         Expires = DateTime.UtcNow.AddHours(2),
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
       };
