@@ -14,31 +14,31 @@ builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var key = builder.Configuration["Jwt:Key"];
+      var key = builder.Configuration["Jwt:Key"];
 
-        options.TokenValidationParameters = new TokenValidationParameters
+      options.TokenValidationParameters = new TokenValidationParameters
+      {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+      };
+
+      options.Events = new JwtBearerEvents
+      {
+        OnMessageReceived = context =>
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-        };
+          var accessToken = context.Request.Query["access_token"];
 
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
+          if (!string.IsNullOrEmpty(accessToken) && context.HttpContext.Request.Path.StartsWithSegments("/chathub"))
+          {
+            context.Token = accessToken;
+          }
 
-                if (!string.IsNullOrEmpty(accessToken) && context.HttpContext.Request.Path.StartsWithSegments("/chathub"))
-                {
-                    context.Token = accessToken;
-                }
-
-                return Task.CompletedTask;
-            }
-        };
+          return Task.CompletedTask;
+        }
+      };
     });
 
 builder.Services.AddAuthorization();
@@ -50,19 +50,19 @@ builder.Services.AddScoped<JwtTokenService>();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5041);
-    options.ListenAnyIP(7163, listenOptions =>
-    {
-        listenOptions.UseHttps();
-    });
+  options.ListenAnyIP(5041);
+  options.ListenAnyIP(7163, listenOptions =>
+  {
+    listenOptions.UseHttps();
+  });
 });
 
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+  app.UseExceptionHandler("/Home/Error");
+  app.UseHsts();
 }
 
 app.UseHttpsRedirection();
