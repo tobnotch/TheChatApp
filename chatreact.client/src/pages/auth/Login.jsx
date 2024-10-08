@@ -49,7 +49,7 @@ const Login = () => {
         sessionStorage.setItem('jwtToken', data.token);
         toast.success(data.message);
         setTimeout(() => {
-          navigate('/mainchat');
+          navigate('/chatroom/main');
         }, 2000);
       } else {
         toast.error("Username or password is incorrect, try again.");
@@ -126,7 +126,7 @@ const Login = () => {
           <div className="w-16 h-16 border-8 border-t-gray-500 border-gray-300 rounded-full animate-spin"></div>
         </div>
       )}
-      <ToastContainer position="top-center" />
+      <ToastContainer position="bottom-left" />
     </div>
   );
 };

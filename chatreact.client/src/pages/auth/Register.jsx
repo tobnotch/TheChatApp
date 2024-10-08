@@ -138,7 +138,7 @@ const Register = () => {
           <Link to="/login" className="text-purple-500 text-center">Login here</Link>
         </form>
       </div>
-      <ToastContainer position="top-center" />
+      <ToastContainer position="bottom-left" />
     </div>
   );
 };
