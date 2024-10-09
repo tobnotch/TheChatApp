@@ -4,9 +4,43 @@ using ChatReact.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NLog.Config;
+using NLog.Targets;
+using NLog.Web;
+using NLog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var config = new LoggingConfiguration();
+
+var fileTarget = new FileTarget("logfile")
+{
+  FileName = "logs/TheChatApp.log",
+  Layout = "${longdate} ${uppercase:${level}} ${message} ${exception}",
+  ArchiveFileName = "logs/archived/log.{#####}.txt",
+  ArchiveAboveSize = 10485760, // Arkivera efter 10 MB
+  MaxArchiveFiles = 7,
+  ArchiveNumbering = ArchiveNumberingMode.Rolling,
+  ConcurrentWrites = true,
+  KeepFileOpen = false,
+  Encoding = Encoding.UTF8
+};
+config.AddTarget(fileTarget);
+
+var consoleTarget = new ConsoleTarget("logconsole")
+{
+  Layout = "${longdate} ${uppercase:${level}} ${message}"
+};
+config.AddTarget(consoleTarget);
+
+config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, consoleTarget);
+config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, fileTarget);
+
+LogManager.Configuration = config;
+
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
 builder.Services.AddSignalR();
 builder.Services.AddControllers();

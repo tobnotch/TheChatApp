@@ -12,11 +12,13 @@ namespace ChatReact.Server.Controllers
   {
     private readonly ChatContext _context;
     private readonly JwtTokenService _jwtTokenService;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(ChatContext context, JwtTokenService jwtTokenService)
+    public AuthController(ChatContext context, JwtTokenService jwtTokenService, ILogger<AuthController> logger)
     {
       _context = context;
       _jwtTokenService = jwtTokenService;
+      _logger = logger;
     }
 
     [HttpPost("signup")]
@@ -43,10 +45,12 @@ namespace ChatReact.Server.Controllers
 
       if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.PasswordHash))
       {
+        _logger.LogWarning("Invalid login attempt for user: {Username}", loginDTO.Username);
         return Unauthorized(new { message = "Invalid credentials" });
       }
 
       var token = _jwtTokenService.GenerateJwtToken(user);
+      _logger.LogInformation("User {Username} logged in successfully", user.Username);
       return Ok(new { message = "Logged in successfully", Token = token });
     }
   }
