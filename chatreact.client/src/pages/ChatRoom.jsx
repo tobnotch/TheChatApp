@@ -84,10 +84,7 @@ const ChatRoom = () => {
         .build();
 
       connection.start().then(() => {
-        setMessages([]);
-
-        connection.invoke('JoinRoom', id)
-          .catch(err => toast.error(`Failed to join room: ${err.message}`));
+        setConnection(connection);
       })
         .catch(err => {
           toast.error("Connection failed!");
@@ -96,11 +93,9 @@ const ChatRoom = () => {
       connection.on('ReceiveMessage', (user, message) => {
         const sanitizedUser = DOMPurify.sanitize(user);
         const sanitizedMessage = DOMPurify.sanitize(message);
-
         setMessages((prevMessages) => [...prevMessages, { user: sanitizedUser, message: sanitizedMessage }]);
       });
 
-      setConnection(connection);
     } else {
       toast.error("You are not authorized!");
     }
@@ -108,7 +103,16 @@ const ChatRoom = () => {
     return () => {
       if (connection) connection.stop();
     };
-  }, [id]);
+  }, []);
+
+  useEffect(() => {
+    if (connection) {
+      setMessages([]);
+
+      connection.invoke('JoinRoom', id)
+        .catch(err => toast.error(`Failed to join room: ${err.message}`));
+    }
+  }, [id, connection]);
 
   useEffect(() => {
     ScrollToBottom();
@@ -137,8 +141,17 @@ const ChatRoom = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('jwtToken');
-    navigate('/login');
+    if (connection) {
+      connection.stop().then(() => {
+        sessionStorage.removeItem('jwtToken');
+        navigate('/login');
+      }).catch(err => {
+        toast.error("Failed to disconnect: " + err.message);
+      });
+    } else {
+      sessionStorage.removeItem('jwtToken');
+      navigate('/login');
+    }
   };
 
   const handleSurpriseClick = () => {

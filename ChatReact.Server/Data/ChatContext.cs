@@ -9,5 +9,6 @@ namespace ChatReact.Server.Data
 
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<ChatLog> ChatLogs { get; set; }
   }
 }
