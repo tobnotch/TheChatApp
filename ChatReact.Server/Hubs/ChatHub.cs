@@ -29,7 +29,6 @@ namespace ChatReact.Server.Hubs
       await base.OnConnectedAsync();
     }
 
-
     public async Task JoinRoom(string chatRoomId)
     {
       var userRole = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
@@ -93,6 +92,5 @@ namespace ChatReact.Server.Hubs
 
       await base.OnDisconnectedAsync(exception);
     }
-
   }
 }
