@@ -1,5 +1,6 @@
 ﻿using ChatReact.Server.Data;
 using ChatReact.Server.Models;
+using ChatReact.Server.Utils;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
@@ -51,17 +52,20 @@ namespace ChatReact.Server.Hubs
 
         foreach (var message in messages)
         {
-          await Clients.Caller.SendAsync("ReceiveMessage", message.Username, message.Message);
+          var decryptedMessage = AesEncryption.Decrypt(message.Message);
+          await Clients.Caller.SendAsync("ReceiveMessage", message.Username, decryptedMessage);
         }
       }
     }
 
     public async Task SendMessage(string user, string message, string chatRoomId)
     {
+      var encryptedMessage = AesEncryption.Encrypt(message);
+
       _context.ChatMessages.Add(new ChatMessage
       {
         Username = user,
-        Message = message,
+        Message = encryptedMessage,
         ChatRoomId = chatRoomId
       });
 
@@ -69,7 +73,7 @@ namespace ChatReact.Server.Hubs
       {
         Username = user,
         Action = "Sent Message",
-        Message = message,
+        Message = encryptedMessage,
         ChatRoomId = chatRoomId
       });
 

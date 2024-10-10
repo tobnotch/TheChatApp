@@ -1,5 +1,6 @@
 ﻿using ChatReact.Server.Data;
 using ChatReact.Server.Hubs;
+using ChatReact.Server.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
@@ -70,13 +71,11 @@ namespace ChatReact.UnitTests.Server.Hubs
 
       Assert.NotNull(savedMessage);
       Assert.Equal(user, savedMessage.Username);
-      Assert.Equal(message, savedMessage.Message);
       Assert.Equal(chatRoomId, savedMessage.ChatRoomId);
 
       Assert.NotNull(savedLog);
       Assert.Equal(user, savedLog.Username);
       Assert.Equal("Sent Message", savedLog.Action);
-      Assert.Equal(message, savedLog.Message);
       Assert.Equal(chatRoomId, savedLog.ChatRoomId);
     }
 
@@ -94,6 +93,16 @@ namespace ChatReact.UnitTests.Server.Hubs
       Assert.NotNull(log);
       Assert.Equal("testUser", log.Username);
       Assert.Equal("Disconnected", log.Action);
+    }
+
+    [Fact]
+    public void TestEncryptionAndDecryption()
+    {
+      var originalMessage = "Hello, this is a test message!";
+      var encryptedMessage = AesEncryption.Encrypt(originalMessage);
+      var decryptedMessage = AesEncryption.Decrypt(encryptedMessage);
+
+      Assert.Equal(originalMessage, decryptedMessage);
     }
   }
 }
