@@ -38,6 +38,7 @@ namespace ChatReact.UnitTests.Server.Hubs
       _chatHub.Clients = mockClients; // Sätt den mockade Clients
     }
 
+    // Testar att användarens anslutning loggas när OnConnectedAsync anropas
     [Fact]
     public async Task OnConnectedAsync_ShouldLogConnection()
     {
@@ -54,6 +55,7 @@ namespace ChatReact.UnitTests.Server.Hubs
       Assert.Equal("Connected", log.Action);
     }
 
+    // Testar att meddelandet och loggposten har sparats korrekt med rätt användarnamn och chattrums-ID
     [Fact]
     public async Task SendMessage_ShouldSaveMessageAndLog()
     {
@@ -79,6 +81,7 @@ namespace ChatReact.UnitTests.Server.Hubs
       Assert.Equal(chatRoomId, savedLog.ChatRoomId);
     }
 
+    // Testar att användarens frånkoppling loggas när OnDisconnectedAsync anropas
     [Fact]
     public async Task OnDisconnectedAsync_ShouldLogDisconnection()
     {
@@ -95,6 +98,7 @@ namespace ChatReact.UnitTests.Server.Hubs
       Assert.Equal("Disconnected", log.Action);
     }
 
+    // Testar att ett meddelande krypteras och avkrypteras korrekt med AesEncryption
     [Fact]
     public void TestEncryptionAndDecryption()
     {

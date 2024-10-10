@@ -17,6 +17,7 @@ namespace ChatReact.Server.Utils
       _key = configBuilder["Encryption:Key"];
     }
 
+    // Krypterar klartext med AES och returnerar den som Base64-sträng
     public static string Encrypt(string plainText)
     {
       using (Aes aesAlg = Aes.Create())
@@ -39,6 +40,7 @@ namespace ChatReact.Server.Utils
       }
     }
 
+    // Avkrypterar Base64-krypterad text med AES
     public static string Decrypt(string cipherText)
     {
       var fullCipher = Convert.FromBase64String(cipherText);

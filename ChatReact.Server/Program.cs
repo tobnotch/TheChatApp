@@ -14,12 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = new LoggingConfiguration();
 
+// Skapar loggning till fil med arkivering
 var fileTarget = new FileTarget("logfile")
 {
   FileName = "logs/TheChatApp.log",
   Layout = "${longdate} ${uppercase:${level}} ${message} ${exception}",
   ArchiveFileName = "logs/archived/log.{#####}.txt",
-  ArchiveAboveSize = 10485760, // Arkivera efter 10 MB
+  ArchiveAboveSize = 10485760,
   MaxArchiveFiles = 7,
   ArchiveNumbering = ArchiveNumberingMode.Rolling,
   ConcurrentWrites = true,
@@ -28,6 +29,7 @@ var fileTarget = new FileTarget("logfile")
 };
 config.AddTarget(fileTarget);
 
+// Skapar loggning till konsolen
 var consoleTarget = new ConsoleTarget("logconsole")
 {
   Layout = "${longdate} ${uppercase:${level}} ${message}"

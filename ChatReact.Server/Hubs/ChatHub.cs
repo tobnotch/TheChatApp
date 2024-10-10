@@ -15,6 +15,7 @@ namespace ChatReact.Server.Hubs
       _context = context;
     }
 
+    // Loggar när man loggar in
     public override async Task OnConnectedAsync()
     {
       var username = Context.User?.Identity?.Name;
@@ -30,6 +31,7 @@ namespace ChatReact.Server.Hubs
       await base.OnConnectedAsync();
     }
 
+    // Låter användare gå med i ett chattrum, kontrollerar VIP-behörighet och hämtar de senaste 50 meddelandena om användaren är autentiserad
     public async Task JoinRoom(string chatRoomId)
     {
       var userRole = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
@@ -58,6 +60,7 @@ namespace ChatReact.Server.Hubs
       }
     }
 
+    // Lagrar meddelande och loggar det samt skickar meddelande i chatten
     public async Task SendMessage(string user, string message, string chatRoomId)
     {
       var encryptedMessage = AesEncryption.Encrypt(message);
@@ -82,6 +85,7 @@ namespace ChatReact.Server.Hubs
       await Clients.Group(chatRoomId).SendAsync("ReceiveMessage", user, message);
     }
 
+    // Loggar när man loggar ut
     public override async Task OnDisconnectedAsync(Exception exception)
     {
       var username = Context.User?.Identity?.Name;
