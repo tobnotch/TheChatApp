@@ -12,6 +12,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import ChatRoomLink from '../components/ChatRoomLink'
 import ChatLogo from '../assets/TheChatAppNoBg.png'
 import ByTobias from '../assets/ByTobias.png'
+import ShakingEmoji from '../assets/shaking-emoji.png'
 
 const chatRooms = [
   { id: 'main', name: 'Main Stage', isPrivate: false },
@@ -175,7 +176,7 @@ const ChatRoom = () => {
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gray-900 overflow-hidden">
       {/* Gick inte att CSSa, så fick göra nedan lösning med två olika divar */}
-      {/* Logotyp för små skärmar */}
+      {/* ChatLogo-Logotyp för små skärmar */}
       <motion.img
         initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -183,7 +184,7 @@ const ChatRoom = () => {
         src={ChatLogo}
         className="block 2xl:hidden w-20 absolute top-5 left-5"
       />
-      {/* Logotyp för stora skärmar (2xl och uppåt) */}
+      {/* ChatLogo-Logotyp för stora skärmar (2xl och uppåt) */}
       <motion.img
         initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -192,7 +193,7 @@ const ChatRoom = () => {
         className="hidden 2xl:block absolute w-40 top-5 left-5"
       />
 
-      {/* Logotyp för små skärmar */}
+      {/* ByTobias-Logotyp för små skärmar */}
       <motion.img
         initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -200,7 +201,7 @@ const ChatRoom = () => {
         src={ByTobias}
         className="block 2xl:hidden w-20 absolute top-2 right-2"
       />
-      {/* Logotyp för stora skärmar (2xl och uppåt) */}
+      {/* ByTobias-Logotyp för stora skärmar (2xl och uppåt) */}
       <motion.img
         initial={{ opacity: 0, filter: "blur(10px)", y: -20 }}
         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -223,10 +224,28 @@ const ChatRoom = () => {
         onClick={handleSurpriseClick}
         initial={{ scale: 1 }}
         whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 1.3, rotate: 360, x: 6 }}
+        animate={
+          isFlipped
+            ? { scale: 1.3, rotate: -3000, x: 6, y: -475 }
+            : { scale: 1, rotate: 0, x: 0, y: 0 }
+        }
+        transition={{ duration: 2.5 }}
       >
         Surprise!
       </motion.button>
+
+      {isMenuInvisible &&
+        <motion.img
+        src={ShakingEmoji} className="absolute w-96"
+        initial={{ scale: 0 }}
+        animate={
+          isFlipped
+            ? { scale: 1, rotate: 2000 }
+            : { scale: 0, rotate: 0 }
+        }
+        transition={{ duration: 2 }}
+      />
+      }
 
       <motion.div
         initial={{ rotate: 0 }}
