@@ -27,7 +27,9 @@ Detta är en fullstack chat-applikation byggd med **.NET** backend och **React**
 ### Frontend
 
 - **React** (UI)
-- **Tailwind** (Animationer)
+- **Tailwind** (Styling)
+- **Framer Motion** (Animationer)
+- **Toastify** (Notifikationer)
 - **SignalR Client** (Realtidschatt)
 
 ### Testning
